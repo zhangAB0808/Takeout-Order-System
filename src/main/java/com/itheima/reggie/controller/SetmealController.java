@@ -12,6 +12,8 @@ import com.itheima.reggie.service.CategoryService;
 import com.itheima.reggie.service.SetmealDishService;
 import com.itheima.reggie.service.SetmealService;
 import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -37,6 +39,7 @@ public class SetmealController {
      * @return
      */
     @PostMapping
+    @CacheEvict(value ="setmealCache",allEntries = true)
     public R<String> save(@RequestBody SetmealDto setmealDto) {
         setmealService.saveWithDish(setmealDto);
         return R.success("新增套餐成功");
@@ -81,11 +84,11 @@ public class SetmealController {
     /**
      * 删除套餐
      *
-     * @return
+     * @returna
      */
-    @DeleteMapping
+    @DeleteMapping                    //allEntries表示删除setmealCache缓存下的所有数据
+    @CacheEvict(value ="setmealCache",allEntries = true)
     public R<String> delete(@RequestParam List<Long> ids) {
-
         setmealService.removeWithDish(ids);
         return R.success("套餐删除成功");
     }
@@ -122,6 +125,7 @@ public class SetmealController {
      * @return
      */
     @PutMapping
+    @CacheEvict(value ="setmealCache",allEntries = true)
     public R<String> update(@RequestBody SetmealDto setmealDto) {
         setmealService.updateSetmeal(setmealDto);
         return R.success("修改套餐成功");
@@ -133,6 +137,7 @@ public class SetmealController {
      * @return
      */
     @GetMapping("/list")
+    @Cacheable(value = "setmealCache",key = "#setmeal.categoryId+'_'+#setmeal.status")
     public R<List<Setmeal>> list(Setmeal setmeal) {
         LambdaQueryWrapper<Setmeal> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(setmeal.getCategoryId() != null, Setmeal::getCategoryId, setmeal.getCategoryId());

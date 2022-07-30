@@ -1,7 +1,6 @@
 package com.itheima.reggie.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.itheima.reggie.common.CustomException;
 import com.itheima.reggie.common.R;
@@ -190,7 +189,6 @@ public class DishController {
         return R.success("菜品状态修改成功");
     }
 
-
     /**
      * 根据条件查询菜品
      *
@@ -253,5 +251,6 @@ public class DishController {
         redisTemplate.opsForValue().set(key, dishDtoList, 60, TimeUnit.MINUTES);
 
         return R.success(dishDtoList);
+
     }
 }
