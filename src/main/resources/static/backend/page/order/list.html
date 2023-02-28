@@ -89,7 +89,7 @@
             </el-button>
             <el-divider v-if="row.status === 3" direction="vertical"></el-divider>
             <el-button v-if="row.status === 3" type="text" @click="cancelOrDeliveryOrComplete(4, row.id)" class="blueBug">
-              完成
+              删除
             </el-button>
           </template>
         </el-table-column>
@@ -245,10 +245,6 @@
                 case 4:
                     str =  '已完成'
                 break;
-                case 5:
-                    str =  '已取消'
-                break;
-
             }
             return str
           },
@@ -267,7 +263,7 @@
               }).then(() => {
                 editOrderDetail(params).then(res => {
                   if (res.code === 1) {
-                    this.$message.success(status === 3 ? '订单已派送' : '订单已完成')
+                    this.$message.success(status === 3 ? '订单已派送' : '订单已删除')
                     this.init()
                   } else {
                     this.$message.error(res.msg || '操作失败')

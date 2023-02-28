@@ -39,7 +39,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
      * 用户下单
      * @param orders
      */
-    @Transactional
+    @Override
+    @Transactional(rollbackFor = Exception.class)
     public void submit(Orders orders) {
         //获得当前用户id
         Long userId = BaseContext.getCurrentId();
@@ -62,8 +63,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
         if(addressBook == null){
             throw new CustomException("用户地址信息有误，不能下单");
         }
-
-        long orderId = IdWorker.getId();//订单号
+         //订单号
+        long orderId = IdWorker.getId();
 
         AtomicInteger amount = new AtomicInteger(0);
 
@@ -81,12 +82,14 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
             return orderDetail;
         }).collect(Collectors.toList());
 
+        user.setName(addressBook.getConsignee());
 
         orders.setId(orderId);
         orders.setOrderTime(LocalDateTime.now());
         orders.setCheckoutTime(LocalDateTime.now());
         orders.setStatus(2);
-        orders.setAmount(new BigDecimal(amount.get()));//总金额
+        //总金额
+        orders.setAmount(new BigDecimal(amount.get()));
         orders.setUserId(userId);
         orders.setNumber(String.valueOf(orderId));
         orders.setUserName(user.getName());

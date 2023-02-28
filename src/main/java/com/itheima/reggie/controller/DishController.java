@@ -8,7 +8,6 @@ import com.itheima.reggie.dto.DishDto;
 import com.itheima.reggie.entity.Category;
 import com.itheima.reggie.entity.Dish;
 import com.itheima.reggie.entity.DishFlavor;
-import com.itheima.reggie.mapper.DishMapper;
 import com.itheima.reggie.service.CategoryService;
 import com.itheima.reggie.service.DishFlavorService;
 import com.itheima.reggie.service.DishService;

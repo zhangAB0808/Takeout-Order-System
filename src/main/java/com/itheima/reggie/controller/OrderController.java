@@ -1,14 +1,18 @@
 package com.itheima.reggie.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.itheima.reggie.common.CustomException;
 import com.itheima.reggie.common.R;
 import com.itheima.reggie.entity.Orders;
 import com.itheima.reggie.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Objects;
 
 /**
  * 订单
@@ -63,4 +67,29 @@ public class OrderController {
         orderService.page(pageInfo,queryWrapper);
         return R.success(pageInfo);
     }
+
+    /**
+     * 修改订单状态
+     * @param orders
+     * @return
+     */
+    @PutMapping
+    public R<Integer> putOrder(@RequestBody Orders orders){
+        Long id = orders.getId();
+        Integer status = orders.getStatus();
+        if(Objects.isNull(id)||Objects.isNull(status)){
+            throw new CustomException("订单id或status不能为空！");
+        }
+        boolean doOrder;
+        if (status.equals(4)){
+            doOrder = orderService.removeById(id);
+        }else{
+            doOrder = orderService.update().set("status", status).eq("id", id).update();
+        }
+        if (!doOrder){
+           return R.error("操作失败！");
+        }
+        return R.success(status);
+    }
+
 }
